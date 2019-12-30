@@ -1,0 +1,116 @@
+<div class="dynaContentBE">
+	<div id="loadingicon" onload=""></div>
+
+	<button type="submit" name="dysaveall" id="dysaveall" class="btn dysaveall">Save all</button>
+
+	<?php $this->insert('mod_dynacontent_navigation', $this->getData()); # load left page navigation ?>
+
+	<div class="dynaContent">
+		<?php if ($this->message['errorCode'] == "noPage"): ?>
+			<div class="alert alert-danger" role="alert">
+				<?php echo $GLOBALS['TL_LANG']['dyna']['noPage'] ?>
+			</div>
+		<?php elseif ($this->message['errorCode'] == "noAccess"): ?>
+			<div class="alert alert-danger" role="alert">
+				<?php echo $GLOBALS['TL_LANG']['dyna']['noAccess'] ?>
+			</div>
+		<?php elseif ($this->message['errorCode'] == "noArticle"): ?>
+			<div class="alert alert-danger" role="alert">
+				<?php echo $GLOBALS['TL_LANG']['dyna']['noArticle'] ?>
+			</div>
+		<?php else: ?>
+		
+			<div class="dyHeader">
+				<div class="dyArticle">
+					
+					<?php foreach($this->articlesColumns as $columns): ?>
+						<?php if($this->columnId == $columns):?>
+							<span class="btn isactive">
+							<img src="/system/themes/flexible/icons/ok.svg" width="16" height="16" alt=""> <?php echo $GLOBALS['TL_LANG']['COLS'][$columns]; ?>
+							</span>
+						<?php else: ?>
+							<span class="">
+							<a href="<?php echo $this->addToUrl("page=" . $this->pageId . "&column=" . $columns); ?>" class="btn">
+							<img src="system/themes/flexible/icons/edit.svg" width="16" height="16" alt=""> <?php echo $GLOBALS['TL_LANG']['COLS'][$columns]; ?></a></span>
+						<?php endif; ?>
+					<?php endforeach; ?>
+				</div>
+				<div class="dyPage">
+				
+					<a href="<?php echo "/contao?do=page&act=edit&id=".$this->pageId."&ref=" . TL_REFERER_ID . "&rt=". REQUEST_TOKEN; ?>&popup=1" title="" class="editPage btn" onclick="Backend.openModalIframe({'title':'Das Modul bearbeiten','url':this.href});return false">
+					<img src="system/themes/flexible/icons/edit.svg" width="16" height="16" alt=""> <?php echo $GLOBALS['TL_LANG']['CHMOD']['editpage'] ?>
+					</a>
+
+				</div>
+			</div>
+
+			<div class="dyPageInfo">
+				<div class="pageInfo">
+					<?php echo $this->pageObj->title ?>
+					<?php if  ($this->pageObj->pageTitle) echo " - <span class='pageTitle'>" . $this->pageObj->pageTitle . "</span>" ?>
+				</div>
+
+				<div class="topAction">
+					<a class="act new" href="/contao?do=article&table=tl_content&dynaback=<?php echo $this->pageId ?>&act=create&mode=2&id=<?php echo $this->article->id ?>&pid=<?php echo $this->articleObj->id ?>&ref=<?php echo TL_REFERER_ID ?>&rt=<?php echo REQUEST_TOKEN ?>" title="<?php echo $GLOBALS['TL_LANG']['DCA']['pastenew'][0]; ?>"><?php echo $GLOBALS['TL_LANG']['DCA']['pastenew'][0] ?> </a>
+				</div>
+			</div>
+
+			<?php if ($this->message['errorCode'] == "noContent"): ?>
+				<div class="alert alert-danger" role="alert">
+					<?php echo $GLOBALS['TL_LANG']['dyna']['noContent'] ?>
+				</div>
+			<?php else: ?>
+				<div class="dyMain">
+					<ul>
+					<?php $insideWrapper = null; $wrapperLevel = 0;
+						foreach($this->contents as $content): ?>
+
+						<?php
+							if (in_array($content->type, $GLOBALS['TL_WRAPPERS']['stop'])) {
+								$wrapperLevel--;
+								$insideWrapper = false;
+							}
+						?>	
+
+						<li id="edit<?php echo $content->id; ?>" class="edit <?php if(\Input::cookie('newItemBe') == $content->id) echo "new"; ?> <?php echo "wrapperLvl" . $wrapperLevel ?>" draggable=true>
+						
+							<div class="dyControl">
+								<div id="togbtn<?php echo ($content->id); ?>" data-togglecontrol="togglelem<?php echo ($content->id); ?>" class="toggleTypeElem holder" title="<?php printf ($GLOBALS['TL_LANG']['dyna']['openclose'],$content->id);?>">
+									<?php echo $this->contentArray[$content->id]['editTitle']; ?> 
+								</div>
+								
+								<div  class="holder action"> 
+									
+									<a class="create act" title="<?php printf ($GLOBALS['TL_LANG']['DCA']['pastenew'][1], $content->id)?>" href="<?php echo ("/contao?do=article&table=tl_content&dynaback=".$this->pageId."&mode=1&act=create&id=" . $content->id ."&pid=" . $content->id ."&rt=" . REQUEST_TOKEN ."&ref=" . TL_REFERER_ID ); ?>">&nbsp;<?php #echo $content->id ?></a>
+
+									<a class="copy act" title="<?php printf ($GLOBALS['TL_LANG']['DCA']['copy'], $content->id)?>" href="<?php echo ("/contao?do=article&table=tl_content&dynaback=".$this->pageId."&mode=1&act=copy&id=" . $content->id ."&pid=" . $content->id ."&rt=" . REQUEST_TOKEN . "&ref=" . TL_REFERER_ID ); ?>">&nbsp;<?php #echo $content->id ?></a>
+
+									<a class="delete act" title="<?php printf ($GLOBALS['TL_LANG']['DCA']['delete'], $content->id)?>" href="<?php echo $this->addToUrl("act=delete&id=" . $content->id); ?>" onclick="return confirm('Delete element?');" >&nbsp;</a>
+
+									<a class="cut dragdrop act" title="<?php printf ($GLOBALS['TL_LANG']['DCA']['cut'], $content->id)?>" href="<?php echo ("/contao?do=article&table=tl_content&dynaback=".$this->pageId."&mode=1&act=cut&id=" . $content->id ."&rt=" . REQUEST_TOKEN . "&ref=" . TL_REFERER_ID ); ?>" data-pid="<?php echo $content->id; ?>" 
+									><span class="ddfield">&nbsp;<?php #echo $content->id ?></span></a>
+
+								</div>
+								
+							</div>
+							<iframe id="togglelem<?php echo ($content->id); ?>" class="dyFrame" 
+								src="<?php echo "/contao?do=article&table=tl_content&act=edit&id=".$content->id."&ref=" . TL_REFERER_ID . "&rt=". REQUEST_TOKEN; ?>&popup=1&dynacontent=1" style="width:100%;border:none;overflow:hidden;" frameBorder="0">
+							</iframe>
+						</li>
+
+						<?php
+							if (in_array($content->type, $GLOBALS['TL_WRAPPERS']['start'])) {
+								$wrapperLevel++;
+								$insideWrapper = true;
+							}
+						?>	
+
+					<?php endforeach; ?>
+					</ul>
+				</div>
+			<?php endif; ?>
+			
+		<?php endif; ?>
+		
+	</div>
+</div>

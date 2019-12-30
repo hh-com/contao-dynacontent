@@ -1,0 +1,27 @@
+{
+    "name": "hh-com/contao-dynacontent",
+    "type": "contao-bundle",
+    "description": "Dynamic Content for Contao",
+	"keywords": ["bootstrap", "contao4"],
+    "license": "MIT",
+    "require": {
+        "php": "^5.6 || ^7.0",
+        "contao/core-bundle": "^4.4"
+    },
+    "extra": {
+        "contao-manager-plugin": "Hhcom\\ContaoDynaContent\\ContaoManager\\Plugin" 
+    },
+    "autoload": {
+        "psr-4": {
+            "Hhcom\\ContaoDynaContent\\": "src/"
+        },
+		"classmap": [
+            "src/Resources/contao"
+		],
+		"exclude-from-classmap": [
+			"src/Resources/contao/config",
+            "src/Resources/contao/templates/",
+			"src/Resources/contao/languages"
+		]
+    }
+}

@@ -1,0 +1,23 @@
+<?php if($GLOBALS['TL_CONFIG']['inMainNavigation']): ?>
+	<div class="dynaNavigation">
+		<?php if($this->dynanavigation):?>
+			<ul>
+				<?php foreach ($this->dynanavigation as $page): ?>
+					<?php if($page['page']['type'] == "root"):?>
+						<li class="isroot mainnav bepage<?php echo $page['page']['id']; ?>">
+							<h2><?php echo $page['page']['title']; ?></h2>
+						</li>
+					<?php else: ?>
+						<li class="ispage mainnav bepage<?php echo $page['page']['id']; ?> belevel<?php echo $page['level']; ?> <?php if ($page['page']['id'] == \Contao\Input::get('page')) echo "active"; ?>">
+							<?php if($page['hasAccess']): ?>
+								<a href="<?php echo $this->addToUrl("page=".$page['page']['id']); ?>"><?php echo $page['page']['title']; ?></a>
+							<?php else: ?>
+								<span class="usernotallowed"><?php echo $page['page']['title']; ?></span>
+							<?php endif; ?>
+						</li>
+					<?php endif; ?>
+				<?php endforeach; ?>
+			</ul>
+		<?php endif; ?>
+	</div>
+<?php endif; ?>
