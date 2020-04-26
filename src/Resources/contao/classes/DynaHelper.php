@@ -16,6 +16,8 @@ class DynaHelper extends \Controller {
 			\System::setCookie('newItemBe', \Input::get('id'), time() + 300);
 			\Controller::redirect('/contao?do=dynacontent&ref='.TL_REFERER_ID.'&rt='.REQUEST_TOKEN.'&page=' . \Input::get('dynaback'));
 		}
+	    
+	    return $sbuffer;
 	}
 
 	/**
